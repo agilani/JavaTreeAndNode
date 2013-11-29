@@ -1,0 +1,54 @@
+<?xml version="1.0"?>
+<!-- ====================================================================== 
+	 Sample Ant build script.
+                   
+     ====================================================================== -->
+<project name="parts" default="deploy">
+	<!-- Declare global properties (name/value pairs) for this build -->
+	<property name="appPath" value="c:/workspace/DSAssignment"/>
+	<property name="eclipseProjectPath" value="${appPath}/"/>
+	<property name="srcDir" value="${eclipseProjectPath}/src"/>
+	<property name="buildDir" value="${appPath}/build"/>
+	<property name="distDir" value="${appPath}/dist"/>
+	<property name="docDir" value="${distDir}/docs"/>
+	
+	
+	<!-- Initialisation task -->
+    <target name="init" depends="clean">
+		<tstamp/>
+		<mkdir dir="${buildDir}"/>
+        <mkdir dir="${distDir}"/>        
+    </target>
+	
+	<!-- Delete any previously created directories and files -->
+    <target name="clean">
+        <delete dir="${buildDir}"/>
+        <delete dir="${distDir}"/>        
+    </target>
+	
+	<!-- Compile source code -->
+	<target name="compile" depends="init">
+		<javac srcdir="${srcDir}" destdir="${buildDir}">
+		</javac>
+	</target>
+	
+	<!-- Generate JavaDocs -->
+    <target name="doc" depends="compile">
+        <javadoc packagenames="me.agilani.www" sourcepath="${srcDir}" destdir="${docDir}" author="true" version="true" use="true" windowtitle="2nd Year Software Development - Tree API by Adeel Gilani">
+            <doctitle><![CDATA[<h1> Data Structures & Algorithms - Tree API by Adeel Gilani</h1>]]></doctitle>
+            <bottom><![CDATA[<i>Copyright &#169; 2012</i>]]></bottom>
+        </javadoc>
+    </target>
+	
+	<!-- Create Java application archive (Jar) -->
+	<target name="archive" depends="doc">
+        <jar destfile="${distDir}/tree.jar" basedir="${buildDir}">
+        </jar>
+    </target>
+	
+	<!-- Compress classes and documentation into Zip and compressed tarball -->
+	<target name="deploy" depends="archive">
+		<tar destfile="${distDir}/tree.tar.gz" basedir="${distDir}" includes="*" compression="gzip"/> 
+		<zip destfile="${distDir}/tree.zip" basedir="${distDir}"/>
+    </target>
+</project>
